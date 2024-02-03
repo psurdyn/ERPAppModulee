@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleAPI", "ERPAppModuleAPI\ERPAppModuleAPI.csproj", "{8B8BD351-9CFD-4CCE-A91A-BCBB3673D620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleLibrary", "ERPAppModuleLibrary\ERPAppModuleLibrary.csproj", "{E5B01862-E49D-4D33-9B4C-6F5166EECA6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleDb", "ERPAppModuleDb\ERPAppModuleDb.csproj", "{E9AC1FEC-7218-4280-B380-70D63717CDC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B8BD351-9CFD-4CCE-A91A-BCBB3673D620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B8BD351-9CFD-4CCE-A91A-BCBB3673D620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B8BD351-9CFD-4CCE-A91A-BCBB3673D620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B8BD351-9CFD-4CCE-A91A-BCBB3673D620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5B01862-E49D-4D33-9B4C-6F5166EECA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5B01862-E49D-4D33-9B4C-6F5166EECA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5B01862-E49D-4D33-9B4C-6F5166EECA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5B01862-E49D-4D33-9B4C-6F5166EECA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
