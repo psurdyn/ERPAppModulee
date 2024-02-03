@@ -13,9 +13,21 @@ public class TrucksController : ApiController
         _trucksService = trucksService;
     }
 
-    // [HttpPut]
-    // public async Task<TruckResponse> Create([FromBody] CreateTruckRequest request)
-    // {
-    //     
-    // }
+    [HttpPut]
+    public async Task<ActionResult<TruckResponse>> Create([FromBody] CreateTruckRequest request)
+    {
+        var result = await _trucksService.Create(request);
+
+        if (result.IsSuccess)
+        {
+            return result.Response!;
+        }
+
+        return result.ExceptionResult.StatusCode switch
+        {
+            400 => new BadRequestObjectResult(result.ExceptionResult.Exception),
+            404 => new NotFoundObjectResult(result.ExceptionResult.Exception),
+            _ => throw new Exception("Uknown error")
+        };
+    }
 }

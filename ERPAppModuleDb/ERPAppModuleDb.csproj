@@ -18,4 +18,8 @@
       <Folder Include="Extensions\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ERPAppModuleCommon\ERPAppModuleCommon.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,8 +1,11 @@
-﻿using ERPAppModuleLibrary.Trucks.PublicModels;
+﻿using ERPAppModuleCommon.Result;
+using ERPAppModuleLibrary.Trucks.PublicModels;
 
 namespace ERPAppModuleLibrary.Trucks.Services;
 
 public interface ITrucksService
 {
-    Task<TruckResponse> Create(CreateTruckRequest request);
+    Task<Result<TruckResponse>> GetByCode(string code);
+    Task<Result<TruckResponse>> Create(CreateTruckRequest request);
+    Task<Result<TruckResponse>> Update()
 }

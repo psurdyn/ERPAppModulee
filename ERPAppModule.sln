@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleLibrary", "ERPA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleDb", "ERPAppModuleDb\ERPAppModuleDb.csproj", "{E9AC1FEC-7218-4280-B380-70D63717CDC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPAppModuleCommon", "ERPAppModuleCommon\ERPAppModuleCommon.csproj", "{2177421A-8E2F-43FD-871C-26FF9A64F783}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9AC1FEC-7218-4280-B380-70D63717CDC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2177421A-8E2F-43FD-871C-26FF9A64F783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2177421A-8E2F-43FD-871C-26FF9A64F783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2177421A-8E2F-43FD-871C-26FF9A64F783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2177421A-8E2F-43FD-871C-26FF9A64F783}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

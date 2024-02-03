@@ -1,7 +1,7 @@
 ﻿using ERPAppModuleDb.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ERPAppModule.Data;
+namespace ERPAppModuleDb.Data;
 
 public class DataContext : DbContext
 {
