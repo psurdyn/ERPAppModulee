@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using ERPAppModuleCommon;
 using ERPAppModuleCommon.Exceptions;
 using ERPAppModuleCommon.Result;
 using ERPAppModuleDb.Repositories;
@@ -50,23 +51,12 @@ public class TrucksService : ITrucksService
 
     public async Task<Result<TruckResponse>> Update(string code, UpdateTruckRequest request)
     {
-        var truckEntity = await _trucksRepository.GetByCode(code);
-        if (truckEntity.IsFailure)
-        {
-            return Result<TruckResponse>.Failure(truckEntity.ExceptionResult);
-        }
-
-        var validationResult = ValidateIfCodeMatchTheFormat(request.NewCode);
-        if(validationResult.IsFailure)
+        var validationResult = await ValidateIfTruckCanBeUpdated(code, request.StatusId, request.NewCode);
+        if (validationResult.IsFailure)
         {
             return Result<TruckResponse>.Failure(validationResult.ExceptionResult!);
         }
-
-        if (truckEntity.Response!.StatusId != request.StatusId)
-        {
-            
-        }
-
+        
         var updateResult = await _trucksRepository.Update(code, request.Name, request.StatusId, request.NewCode,
             request.Description);
         if (updateResult.IsFailure)
@@ -96,16 +86,68 @@ public class TrucksService : ITrucksService
         return Result.Success();
     }
 
+    private async ValueTask<Result> ValidateIfTruckCanBeUpdated(string code, string newStatusId, string? newCode)
+    {
+        var truckEntity = await _trucksRepository.GetByCode(code);
+        if (truckEntity.IsFailure)
+        {
+            return Result.Failure(truckEntity.ExceptionResult);
+        }
+
+        if (newCode != null)
+        {
+            var validationResult = ValidateIfCodeMatchTheFormat(newCode);
+            if(validationResult.IsFailure)
+            {
+                return Result.Failure(validationResult.ExceptionResult!);
+            }   
+        }
+
+        if (truckEntity.Response!.StatusId != newStatusId)
+        {
+            var validateStatusResult = ValidateStatusChange(truckEntity.Response!.StatusId, newStatusId);
+            if (validateStatusResult.IsFailure)
+            {
+                return Result.Failure(validateStatusResult.ExceptionResult!);
+            }
+        }
+
+        return Result.Success();
+    }
+    
     private Result ValidateIfCodeMatchTheFormat(string code)
     {
         var regex = new Regex("^[a-zA-Z][a-zA-Z0-9]*$");
         return regex.Match(code).Success ? Result.Success() : Result.Failure(new InvalidCodeFormatException(code), 400);
     }
 
-    private async Task<Result> ValidateStatusChange(string currentStatus, string newStatus)
+    private Result ValidateStatusChange(string currentStatus, string newStatus)
     {
-        var statuses = await _truckStatusesRepository.GetStatuses(new[] { currentStatus, newStatus });
+        if (currentStatus == nameof(Constants.OutOfServiceStatus) || newStatus == nameof(Constants.OutOfServiceStatus))
+        {
+            return Result.Success();    
+        }
 
-        return Result.Success();
+        if (currentStatus == nameof(Constants.LoadingStatus) && newStatus == nameof(Constants.ToJobStatus))
+        {
+            return Result.Success();
+        }
+
+        if (currentStatus == nameof(Constants.ToJobStatus) && newStatus == Constants.AtJobStatus)
+        {
+            return Result.Success();
+        }
+
+        if (currentStatus == Constants.AtJobStatus && newStatus == Constants.ReturningStatus)
+        {
+            return Result.Success();
+        }
+
+        if (currentStatus == Constants.ReturningStatus && newStatus == Constants.LoadingStatus)
+        {
+            return Result.Success();
+        }
+
+        return Result.Failure(new InvalidNewStatusException(newStatus), 400);
     }
 }
