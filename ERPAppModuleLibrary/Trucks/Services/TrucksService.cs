@@ -54,7 +54,11 @@ public class TrucksService : ITrucksService
             return Result<TruckResponse>.Failure(truckEntity.ExceptionResult);
         }
 
-        ValidateIfCodeMatchTheFormat(request.NewCode);
+        var validationResult = ValidateIfCodeMatchTheFormat(request.NewCode);
+        if(validationResult.IsFailure)
+        {
+            return Result<TruckResponse>.Failure(validationResult.ExceptionResult!);
+        }
 
         var updateResult = await _trucksRepository.Update(code, request.Name, request.StatusId, request.NewCode,
             request.Description);
@@ -66,6 +70,23 @@ public class TrucksService : ITrucksService
         var response = new TruckResponse(updateResult.Response!.Code, updateResult.Response.Name,
             updateResult.Response.Status.Name, updateResult.Response.Description);
         return Result<TruckResponse>.Success(response);
+    }
+
+    public async Task<Result> Delete(string code)
+    {
+        var truckEntity = await _trucksRepository.GetByCode(code);
+        if (truckEntity.IsFailure)
+        {
+            return Result.Failure(truckEntity.ExceptionResult);
+        }
+
+        var deleteResult = await _trucksRepository.Delete(code);
+        if (deleteResult.IsFailure)
+        {
+            return Result.Failure(deleteResult.ExceptionResult!);
+        }
+
+        return Result.Success();
     }
 
     private Result ValidateIfCodeMatchTheFormat(string code)

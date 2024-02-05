@@ -18,6 +18,8 @@ public class Result
 
     public static Result Failure(Exception exception, int statusCode) =>
         new(false, new ExceptionResult(exception, statusCode));
+
+    public static Result Failure(ExceptionResult exceptionResult) => new(false, exceptionResult);
 }
 
 public class Result<T> where T : class

@@ -81,12 +81,12 @@ public class TrucksRepository : ITrucksRepository
         return Result<TrucksEntity>.Success(truckEntity);
     }
 
-    public async Task<Result> Delete(int id)
+    public async Task<Result> Delete(string code)
     {
-        var truckEntity = await _context.Set<TrucksEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        var truckEntity = await _context.Set<TrucksEntity>().FirstOrDefaultAsync(x => x.Code == code);
         if (truckEntity == null)
         {
-            return Result.Failure(new InvalidTruckIdException(id), 404);
+            return Result.Failure(new NoTruckForProvidedCodeException(code), 404);
         }
 
         _context.Set<TrucksEntity>().Remove(truckEntity);
