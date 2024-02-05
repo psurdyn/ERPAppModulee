@@ -2,7 +2,7 @@
 
 public class StatusNotFoundException : Exception
 {
-    public StatusNotFoundException(int statusId) : base(message: $"Status with id: {statusId} has not been found!")
+    public StatusNotFoundException(string statusId) : base(message: $"Status with id: {statusId} has not been found!")
     {
     }
 }

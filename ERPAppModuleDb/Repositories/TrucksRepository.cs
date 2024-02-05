@@ -9,10 +9,12 @@ namespace ERPAppModuleDb.Repositories;
 public class TrucksRepository : ITrucksRepository
 {
     private readonly DataContext _context;
+    private readonly ITruckStatusesRepository _truckStatusesRepository;
 
-    public TrucksRepository(DataContext context)
+    public TrucksRepository(DataContext context, ITruckStatusesRepository truckStatusesRepository)
     {
         _context = context;
+        _truckStatusesRepository = truckStatusesRepository;
     }
 
     public async Task<Result<TrucksEntity>> GetByCode(string code)
@@ -26,9 +28,9 @@ public class TrucksRepository : ITrucksRepository
         return Result<TrucksEntity>.Success(truck);
     }
 
-    public async Task<Result<TrucksEntity>> Create(string code, string name, int statusId)
+    public async Task<Result<TrucksEntity>> Create(string code, string name, string statusId)
     {
-        var status = await GetStatus(statusId);
+        var status = await _truckStatusesRepository.GetStatus(statusId);
         if (status.IsFailure)
         {
             return Result<TrucksEntity>.Failure(status.ExceptionResult.Exception, status.ExceptionResult.StatusCode);
@@ -48,7 +50,7 @@ public class TrucksRepository : ITrucksRepository
         return Result<TrucksEntity>.Success(createdEntity);
     }
 
-    public async Task<Result<TrucksEntity>> Update(string code, string name, int statusId, string? newCode, string? description = null)
+    public async Task<Result<TrucksEntity>> Update(string code, string name, string statusId, string? newCode, string? description = null)
     {
         var truckEntity = await _context.Set<TrucksEntity>().FirstOrDefaultAsync(x => x.Code == code);
         if (truckEntity == null)
@@ -56,7 +58,7 @@ public class TrucksRepository : ITrucksRepository
             return Result<TrucksEntity>.Failure(new NoTruckForProvidedCodeException(code), 404);
         }
         
-        var status = await GetStatus(statusId);
+        var status = await _truckStatusesRepository.GetStatus(statusId);
         if (status.IsFailure)
         {
             return Result<TrucksEntity>.Failure(status.ExceptionResult.Exception, status.ExceptionResult.StatusCode);
@@ -106,15 +108,5 @@ public class TrucksRepository : ITrucksRepository
         return Result.Success();
     }
 
-    private async Task<Result<TruckStatusesDictionary>> GetStatus(int statusId)
-    {
-        var status = await _context.Set<TruckStatusesDictionary>()
-            .FirstOrDefaultAsync(x => x.Id == statusId);
-        if (status == null)
-        {
-            return Result<TruckStatusesDictionary>.Failure(new StatusNotFoundException(statusId), 400);
-        }
 
-        return Result<TruckStatusesDictionary>.Success(status);
-    }
 }

@@ -9,7 +9,7 @@ public class TrucksEntity : BaseEntity
     public string Name { get; set; }
     public string? Description { get; set; }
 
-    public int StatusId { get; set; }
+    public string StatusId { get; set; }
     public virtual TruckStatusesDictionary Status { get; set; }
 }
 

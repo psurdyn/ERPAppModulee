@@ -9,10 +9,12 @@ namespace ERPAppModuleLibrary.Trucks.Services;
 public class TrucksService : ITrucksService
 {
     private readonly ITrucksRepository _trucksRepository;
+    private readonly ITruckStatusesRepository _truckStatusesRepository;
 
-    public TrucksService(ITrucksRepository trucksRepository)
+    public TrucksService(ITrucksRepository trucksRepository, ITruckStatusesRepository truckStatusesRepository)
     {
         _trucksRepository = trucksRepository;
+        _truckStatusesRepository = truckStatusesRepository;
     }
 
     public async Task<Result<TruckResponse>> GetByCode(string code)
@@ -35,7 +37,7 @@ public class TrucksService : ITrucksService
             return Result<TruckResponse>.Failure(formatValidationResult.ExceptionResult!);
         }
 
-        var newEntityResult = await _trucksRepository.Create(request.Code, request.Name, request.statusId);
+        var newEntityResult = await _trucksRepository.Create(request.Code, request.Name, request.StatusId);
         if (newEntityResult.IsFailure)
         {
             return Result<TruckResponse>.Failure(newEntityResult.ExceptionResult);
@@ -58,6 +60,11 @@ public class TrucksService : ITrucksService
         if(validationResult.IsFailure)
         {
             return Result<TruckResponse>.Failure(validationResult.ExceptionResult!);
+        }
+
+        if (truckEntity.Response!.StatusId != request.StatusId)
+        {
+            
         }
 
         var updateResult = await _trucksRepository.Update(code, request.Name, request.StatusId, request.NewCode,
@@ -93,5 +100,12 @@ public class TrucksService : ITrucksService
     {
         var regex = new Regex("^[a-zA-Z][a-zA-Z0-9]*$");
         return regex.Match(code).Success ? Result.Success() : Result.Failure(new InvalidCodeFormatException(code), 400);
+    }
+
+    private async Task<Result> ValidateStatusChange(string currentStatus, string newStatus)
+    {
+        var statuses = await _truckStatusesRepository.GetStatuses(new[] { currentStatus, newStatus });
+
+        return Result.Success();
     }
 }
