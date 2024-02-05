@@ -7,5 +7,5 @@ public interface ITrucksService
 {
     Task<Result<TruckResponse>> GetByCode(string code);
     Task<Result<TruckResponse>> Create(CreateTruckRequest request);
-    Task<Result<TruckResponse>> Update()
+    Task<Result<TruckResponse>> Update(string code, UpdateTruckRequest request);
 }

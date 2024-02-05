@@ -27,7 +27,7 @@ public class TrucksController : ApiController
         {
             400 => new BadRequestObjectResult(result.ExceptionResult.Exception),
             404 => new NotFoundObjectResult(result.ExceptionResult.Exception),
-            _ => throw new Exception("Uknown error")
+            _ => throw new Exception("Unexpected error occured")
         };
     }
 }

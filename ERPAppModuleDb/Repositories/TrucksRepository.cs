@@ -26,9 +26,9 @@ public class TrucksRepository : ITrucksRepository
         return Result<TrucksEntity>.Success(truck);
     }
 
-    public async Task<Result<TrucksEntity>> Create(string code, string name, string statusName)
+    public async Task<Result<TrucksEntity>> Create(string code, string name, int statusId)
     {
-        var status = await GetStatus(statusName);
+        var status = await GetStatus(statusId);
         if (status.IsFailure)
         {
             return Result<TrucksEntity>.Failure(status.ExceptionResult.Exception, status.ExceptionResult.StatusCode);
@@ -48,23 +48,33 @@ public class TrucksRepository : ITrucksRepository
         return Result<TrucksEntity>.Success(createdEntity);
     }
 
-    public async Task<Result<TrucksEntity>> Update(int id, string code, string name, string statusName)
+    public async Task<Result<TrucksEntity>> Update(string code, string name, int statusId, string? newCode, string? description = null)
     {
-        var truckEntity = await _context.Set<TrucksEntity>().FirstOrDefaultAsync(x => x.Id == id);
+        var truckEntity = await _context.Set<TrucksEntity>().FirstOrDefaultAsync(x => x.Code == code);
         if (truckEntity == null)
         {
-            return Result<TrucksEntity>.Failure(new InvalidTruckIdException(id), 404);
+            return Result<TrucksEntity>.Failure(new NoTruckForProvidedCodeException(code), 404);
         }
         
-        var status = await GetStatus(statusName);
+        var status = await GetStatus(statusId);
         if (status.IsFailure)
         {
             return Result<TrucksEntity>.Failure(status.ExceptionResult.Exception, status.ExceptionResult.StatusCode);
         }
-
-        truckEntity.Code = code;
+        
         truckEntity.Name = name;
         truckEntity.Status = status.Response!;
+
+        if (newCode != null && newCode != code)
+        {
+            await CheckCodeUniqueness(newCode);
+            truckEntity.Code = newCode;
+        }
+
+        if (description != null)
+        {
+            truckEntity.Description = description;
+        }
 
         await _context.SaveChangesAsync();
 
@@ -96,13 +106,13 @@ public class TrucksRepository : ITrucksRepository
         return Result.Success();
     }
 
-    private async Task<Result<TruckStatusesDictionary>> GetStatus(string statusName)
+    private async Task<Result<TruckStatusesDictionary>> GetStatus(int statusId)
     {
         var status = await _context.Set<TruckStatusesDictionary>()
-            .FirstOrDefaultAsync(x => x.Name.ToLowerInvariant() == statusName.ToLowerInvariant());
+            .FirstOrDefaultAsync(x => x.Id == statusId);
         if (status == null)
         {
-            return Result<TruckStatusesDictionary>.Failure(new InvalidStatusException(statusName), 400);
+            return Result<TruckStatusesDictionary>.Failure(new StatusNotFoundException(statusId), 400);
         }
 
         return Result<TruckStatusesDictionary>.Success(status);
