@@ -45,7 +45,7 @@ public class TrucksService : ITrucksService
         }
 
         var response = new TruckResponse(newEntityResult.Response!.Code, newEntityResult.Response.Name,
-            newEntityResult.Response.Status.Name, newEntityResult.Response.Status.Name);
+            newEntityResult.Response.Status.Name, newEntityResult.Response.Description);
         return Result<TruckResponse>.Success(response);
     }
 

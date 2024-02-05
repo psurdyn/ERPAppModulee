@@ -22,7 +22,7 @@ internal class TrucksEntityConfiguration : IEntityTypeConfiguration<TrucksEntity
         builder.Property(x => x.Code).IsRequired();
         builder.HasIndex(x => x.Code).IsUnique();
         builder.Property(x => x.Name).IsRequired();
-        builder.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired(false);
+        builder.Property(x => x.UpdatedAt).HasDefaultValueSql("GETDATE()").IsRequired(false);
         builder.Property(x => x.Description).IsRequired(false);
 
         builder.HasOne<TruckStatusesDictionary>(x => x.Status).WithMany(x => x.Trucks).HasForeignKey(x => x.StatusId)

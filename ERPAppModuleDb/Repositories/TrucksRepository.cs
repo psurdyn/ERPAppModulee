@@ -36,7 +36,11 @@ public class TrucksRepository : ITrucksRepository
             return Result<TrucksEntity>.Failure(status.ExceptionResult.Exception, status.ExceptionResult.StatusCode);
         }
 
-        await CheckCodeUniqueness(code);
+        var codeUniquenessValidationResult = await CheckCodeUniqueness(code);
+        if (codeUniquenessValidationResult.IsFailure)
+        {
+            return Result<TrucksEntity>.Failure(codeUniquenessValidationResult.ExceptionResult!);
+        }
         
         var newEntity = new TrucksEntity
         {

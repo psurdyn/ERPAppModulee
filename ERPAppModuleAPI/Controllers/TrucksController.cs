@@ -1,11 +1,13 @@
 ﻿using ERPAppModuleLibrary.Trucks.PublicModels;
 using ERPAppModuleLibrary.Trucks.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERPAppModule.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[AllowAnonymous]
 public class TrucksController : ApiController
 {
     private readonly ITrucksService _trucksService;
@@ -15,7 +17,7 @@ public class TrucksController : ApiController
         _trucksService = trucksService;
     }
 
-    [HttpGet("code")]
+    [HttpGet("{code}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TruckResponse>> Get([FromRoute] string code)
@@ -55,7 +57,7 @@ public class TrucksController : ApiController
         };
     }
 
-    [HttpPost]
+    [HttpPost("{code}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,7 +78,7 @@ public class TrucksController : ApiController
         };
     }
 
-    [HttpDelete("code")]
+    [HttpDelete("{code}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
