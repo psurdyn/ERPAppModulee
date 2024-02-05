@@ -122,7 +122,14 @@ public class TrucksService : ITrucksService
 
     private IEnumerable<TrucksEntity> GetPage(IQueryable<TrucksEntity> query, int page, int pageSize)
     {
-        return query.Skip((page - 1) * pageSize).Take(pageSize);
+        query.TryGetNonEnumeratedCount(out int count);
+
+        if (page == 1 || count > (page - 1) * pageSize)
+        {
+            return query.Skip((page - 1) * pageSize).Take(pageSize);   
+        }
+
+        return Enumerable.Empty<TrucksEntity>();
     }
 
     private static IQueryable<TrucksEntity> ApplyOrdering(IQueryable<TrucksEntity> query, QueryObject queryObj, Dictionary<string, Expression<Func<TrucksEntity, object>>> columnsMap)
