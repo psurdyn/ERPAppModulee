@@ -1,7 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using ERPAppModuleCommon;
 using ERPAppModuleCommon.Exceptions;
 using ERPAppModuleCommon.Result;
+using ERPAppModuleDb.Entities;
 using ERPAppModuleDb.Repositories;
 using ERPAppModuleLibrary.Trucks.PublicModels;
 
@@ -86,6 +88,51 @@ public class TrucksService : ITrucksService
         return Result.Success();
     }
 
+    public async Task<IEnumerable<TruckResponse>> QueryItems(QueryObject queryObject)
+    {
+        var query = _trucksRepository.GetTrucksQueryable();
+        
+        if (!string.IsNullOrEmpty(queryObject.StatusId))
+        {
+            query = query.Where(x => x.StatusId.Contains(queryObject.StatusId));
+        }
+
+        if (!string.IsNullOrEmpty(queryObject.Code))
+        {
+            query = query.Where(x => x.Code.Contains(queryObject.Code));
+        }
+
+        if (!string.IsNullOrEmpty(queryObject.Name))
+        {
+            query = query.Where(x => x.Name.Contains(queryObject.Name));
+        }
+        
+        var columnsMap = new Dictionary<string, Expression<Func<TrucksEntity, object>>>
+        {
+            ["name"] = x => x.Name,
+            ["statusId"] = x => x.StatusId,
+            ["code"] = x => x.Code
+        };
+        query = ApplyOrdering(query, queryObject, columnsMap);
+
+        var pageData = GetPage(query, queryObject.Page, queryObject.PageSize ?? 20);
+
+        return pageData.Select(x => new TruckResponse(x.Code, x.Name, x.Status.Name, x.Description));
+    }
+
+    private IEnumerable<TrucksEntity> GetPage(IQueryable<TrucksEntity> query, int page, int pageSize)
+    {
+        return query.Skip((page - 1) * pageSize).Take(pageSize);
+    }
+
+    private static IQueryable<TrucksEntity> ApplyOrdering(IQueryable<TrucksEntity> query, QueryObject queryObj, Dictionary<string, Expression<Func<TrucksEntity, object>>> columnsMap)
+    {
+        if (string.IsNullOrWhiteSpace(queryObj.SortBy) || !columnsMap.ContainsKey(queryObj.SortBy))
+            return query;
+
+        return queryObj.IsSortAscending ? query.OrderBy(columnsMap[queryObj.SortBy]) : query.OrderByDescending(columnsMap[queryObj.SortBy]);
+    }
+    
     private async ValueTask<Result> ValidateIfTruckCanBeUpdated(string code, string newStatusId, string? newCode)
     {
         var truckEntity = await _trucksRepository.GetByCode(code);

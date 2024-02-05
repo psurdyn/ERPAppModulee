@@ -11,4 +11,5 @@ public interface ITrucksRepository
     Task<Result<TrucksEntity>> Update(string code, string name, string statusId, string? newCode,
         string? description = null);
     Task<Result> Delete(string code);
+    IQueryable<TrucksEntity> GetTrucksQueryable();
 }

@@ -36,6 +36,13 @@ public class TrucksController : ApiController
         };
     }
 
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IEnumerable<TruckResponse>> QueryTrucks([FromQuery]QueryObject queryObj)
+    {
+        return await _trucksService.QueryItems(queryObj);
+    }
+
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

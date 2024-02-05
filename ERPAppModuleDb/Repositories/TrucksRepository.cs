@@ -102,6 +102,11 @@ public class TrucksRepository : ITrucksRepository
         return Result.Success();
     }
 
+    public IQueryable<TrucksEntity> GetTrucksQueryable()
+    {
+        return _context.Set<TrucksEntity>().Include(x => x.Status);
+    }
+
     private async ValueTask<Result> CheckCodeUniqueness(string code)
     {
         if (await _context.Set<TrucksEntity>().AnyAsync(x => x.Code == code))

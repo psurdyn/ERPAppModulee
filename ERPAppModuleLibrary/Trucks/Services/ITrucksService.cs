@@ -9,4 +9,5 @@ public interface ITrucksService
     Task<Result<TruckResponse>> Create(CreateTruckRequest request);
     Task<Result<TruckResponse>> Update(string code, UpdateTruckRequest request);
     Task<Result> Delete(string code);
+    Task<IEnumerable<TruckResponse>> QueryItems(QueryObject queryObject);
 }
